@@ -1,8 +1,15 @@
+// Code in dart language using flutter
+// AirVibe - An Android app to make the world better
+// Author: Rungrit P. Year 12
+// Coded using Flutter 3.0.3
+// This code can be use without any of my permission
+
+// Main file to run the app doesn't have much other than navigator to other page within the application
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'home.dart' show HomeScreen;
-import 'news.dart' show NewsScreen;
-import 'add.dart' show AddScreen;
+import 'home.dart' show HomeScreen; // import home screen
+import 'news.dart' show NewsScreen; // import news screen
+import 'add.dart' show AddScreen; // import add screen
 
 // Main method used to run an app. Very important!!!!111
 void main() => runApp(const MainStuff());
