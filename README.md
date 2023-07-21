@@ -5,7 +5,7 @@ AirVibe is a software that allows users to check their local air quality index a
 
 
 ## Screenshots
-
+initial release version not final
 ![App Screenshot](https://lh3.googleusercontent.com/u/0/drive-viewer/AITFw-xfhN3wiBRlbDxwzYWeAKdTOFYuRbZhWz7gvSwbx3VL8Mh4a0zeXcv5UVoa99wBRhPSs_RVN0laVBKRcm4tvQVrl41TfA=w1865-h969)
 
 
