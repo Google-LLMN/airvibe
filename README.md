@@ -1,7 +1,13 @@
 
-# AirVibe NOTE: IT IS UNFINISHED
+# AirVibe
 
 AirVibe is a software that allows users to check their local air quality index and includes a survey for the users about carbon emissions with pieces of advice on reducing them. It is a software that I created for my VCE unit 3 software development SAT.
+
+
+## Screenshots
+
+![App Screenshot](https://lh3.googleusercontent.com/u/0/drive-viewer/AITFw-xfhN3wiBRlbDxwzYWeAKdTOFYuRbZhWz7gvSwbx3VL8Mh4a0zeXcv5UVoa99wBRhPSs_RVN0laVBKRcm4tvQVrl41TfA=w1865-h969)
+
 
 ## Features
 
