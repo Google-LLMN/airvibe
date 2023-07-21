@@ -8,6 +8,9 @@ class AddScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(backgroundColor: Color.fromARGB(255, 44, 77, 138),),
       backgroundColor: Color.fromARGB(255, 32, 56, 100),
+      body: Center(
+        child: Text('CommingSoon'),
+      ),
     );
   }
 }
