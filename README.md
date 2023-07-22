@@ -15,7 +15,7 @@ Developing using flutter development kit [(More info)](https://www.geeksforgeeks
 - Give you an advice
 - Calculate the amount of carbon you made
 ## Download
-Get the app from the [releases page](https://github.com/Google-LLMN/airvibe/releases) and install it.
+Get app from the [releases page](https://github.com/Google-LLMN/airvibe/releases) and install it. Note that the app is still in development
 ## Author and contributor
 - [@Google-LLMN](https://github.com/Google-LLMN) (Rungrit) - Student/ Dev
 - @MrBrowny - Teacher/ Adviser
@@ -46,3 +46,8 @@ This source code is free to use without any permission.
  - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
  - [Flutter](https://flutter.dev/)
  - [Flutter UI Templates](https://www.fluttertemplates.dev/)
+
+## Concern & Question 
+Please contact me if you have any questions
+
+- Email: rungritza2580@gmail.com
