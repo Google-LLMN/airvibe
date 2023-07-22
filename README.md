@@ -1,12 +1,9 @@
 
 # AirVibe
 
-AirVibe is a software that allows users to check their local air quality index and includes a survey for the users about carbon emissions with pieces of advice on reducing them. It is a software that I created for my VCE unit 3 software development SAT.
+AirVibe is a software that allows users to check their local air quality index and includes a survey for the users about carbon emissions with pieces of advice on reducing them. It is a software that I created for my VCE unit 3 software development SAT. 
 
-
-## Screenshots
-initial release version not final
-![App Screenshot](https://lh3.googleusercontent.com/u/0/drive-viewer/AITFw-xfhN3wiBRlbDxwzYWeAKdTOFYuRbZhWz7gvSwbx3VL8Mh4a0zeXcv5UVoa99wBRhPSs_RVN0laVBKRcm4tvQVrl41TfA=w1865-h969)
+Developing using flutter development kit [(More info)](https://www.geeksforgeeks.org/what-is-flutter/)
 
 
 ## Features
@@ -14,9 +11,11 @@ initial release version not final
 - Android application
 - Random survey questions
 - Show local AQI (Air Quality Index)
-- Cross platform
+- Cross-platform
 - Give you an advice
-- Calculate amount of carbon you made
+- Calculate the amount of carbon you made
+## Download
+Get the app from the [releases page](https://github.com/Google-LLMN/airvibe/releases) and install it.
 ## Author and contributor
 - [@Google-LLMN](https://github.com/Google-LLMN) (Rungrit) - Student/ Dev
 - @MrBrowny - Teacher/ Adviser
@@ -24,7 +23,7 @@ initial release version not final
 
 ## FAQ
 
-#### Why are you making this?
+#### Why are you making this? 
 
 - For my school project ofc.
 
@@ -36,7 +35,14 @@ initial release version not final
 - Yes
 
 
-## Contributing
+## License
 
-Please Fix my code if you are seeing this.
+This source code is free to use without any permission.
 
+
+## Acknowledgements
+
+ - [AQAir](https://www.iqair.com/australia)
+ - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
+ - [Flutter](https://flutter.dev/)
+ - [Flutter UI Templates](https://www.fluttertemplates.dev/)
