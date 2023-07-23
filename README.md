@@ -9,11 +9,11 @@ Developing using flutter development kit [(More info)](https://www.geeksforgeeks
 ## Features
 
 - Android application
-- Random survey questions
-- Show local AQI (Air Quality Index)
-- Cross-platform
-- Give you an advice
-- Calculate the amount of carbon you made
+- Random survey questions (Soon)
+- Show local AQI (Air Quality Index) & current weather
+- Cross-platform (Soon)
+- Give you an advice (Soon)
+- Calculate the amount of carbon you made (Soon)
 ## Download
 Get app from the [releases page](https://github.com/Google-LLMN/airvibe/releases) and install it. Note that the app is still in development
 ## Author and contributor
