@@ -85,7 +85,7 @@ class SurveyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Survey Screen'),
+      child: Text('Survey Screen. Coming Soon...', style: TextStyle(color: Colors.white)),
     );
   }
 }
@@ -96,7 +96,7 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Result Screen'),
+      child: Text('Result Screen. Coming Soon...', style: TextStyle(color: Colors.white)),
     );
   }
 }

@@ -7,7 +7,7 @@ class NewsScreen extends StatelessWidget {
   const NewsScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('News Screen. Coming Soon...', style: TextStyle(color: Colors.white)),
     );
   }

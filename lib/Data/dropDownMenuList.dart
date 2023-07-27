@@ -1,7 +1,10 @@
 // List of all cities and towns in Australia
 // un used for now
 
-List<String> cities = [
+String? selectedState;
+String? selectedUrban;
+
+List<String> stateAU = [
   'Australian Capital Territory',
   'New South Wales',
   'Northern Territory',
