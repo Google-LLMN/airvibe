@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // Required to get data from website
 import 'package:html/parser.dart' as parser; // Also required
+import 'setting.dart' show SettingsPage;
+import 'dart:async';
 
 class AQIRipper extends StatefulWidget {
   const AQIRipper({super.key});
@@ -15,21 +17,87 @@ class AQIRipper extends StatefulWidget {
 }
 
 class AQIWidgetState extends State<AQIRipper> {
+
+  // A SnackBar to use with _refreshDataWithDebounce()
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  // A waiting timer to prevent overload the website. (Maybe)
+  bool _isButtonDisabled = false;
+  void _refreshDataWithDebounce() {
+    if (!_isButtonDisabled) {
+      setState(() {
+        _isButtonDisabled = true;
+      });
+
+      _showSnackBar("Please wait...");
+      _refreshData();
+
+      // Time delay between the reloading
+      Timer(const Duration(seconds: 4), () {
+        setState(() {
+          _isButtonDisabled = false;
+        });
+      });
+    }
+  }
+
+  // I duplicated this and the bottom one
+  // This one is used for refresh data
+  // Tell me if you come up with a better solution
+  Future<void> _refreshData() async {
+
+    setState(() {
+      _aqi = '...';
+      _message = 'Loading..';
+      _weatherScale = 'Loading..';
+    });
+
+    await fetchData(
+      'http://www.bom.gov.au/vic/forecasts/melbourne.shtml',
+      'summary',
+          (newValue) {
+        setState(() {
+          _weatherScale = '•   $newValue';
+        });
+      },
+    );
+
+    await fetchData(
+      'https://www.iqair.com/australia',
+      'aqi-box-green description__header__number iqair-aqi-pill',
+          (newValue) {
+        setState(() {
+          _aqi = newValue;
+        });
+      },
+    );
+    textFeedback(_aqi);
+  }
   String _aqi = '...';
   String _message = 'Loading..';
   String _weatherScale = 'Loading..'; // TODO Implement proper weather system
 
   @override
-  
   void initState() {
     super.initState();
-    fetchData('http://www.bom.gov.au/vic/forecasts/melbourne.shtml',
-        'summary',
-            (newValue) {
-              setState(() {
-                _weatherScale = '•   $newValue';
-              });
-            },);
+
+    fetchData(
+      'http://www.bom.gov.au/vic/forecasts/melbourne.shtml',
+      'summary',
+      (newValue) {
+        setState(() {
+          _weatherScale = '•   $newValue';
+        });
+      },
+    );
     fetchData(
       'https://www.iqair.com/australia',
       'aqi-box-green description__header__number iqair-aqi-pill',
@@ -49,7 +117,7 @@ class AQIWidgetState extends State<AQIRipper> {
       String url, String urlClassName, Function(String) updateVariable) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      // Get the content from the website you want
+      // Get the content from the website
       final document = parser.parse(response.body);
       // Find the specific element that contains the value then take it :)
       final elements = document.getElementsByClassName(urlClassName);
@@ -140,6 +208,20 @@ class AQIWidgetState extends State<AQIRipper> {
             textAlign: TextAlign.center,
           ),
         ),
+        Expanded(
+            flex: 0,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: SizedBox(
+                  width: 15,
+                  height: 15,
+                  child: FloatingActionButton(
+                    onPressed: _refreshDataWithDebounce,
+                    backgroundColor: const Color(0x00000000),
+                    elevation: 0,
+                    child: const Icon(Icons.refresh, size: 15, color: Colors.white),
+                  )),
+            ))
       ],
     );
   }
@@ -147,19 +229,27 @@ class AQIWidgetState extends State<AQIRipper> {
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsPage()));
+                },
+                icon: const Icon(Icons.settings))
+          ],
           title: const Text(
             'Home',
             style: TextStyle(fontSize: 30),
           ),
           backgroundColor: const Color.fromARGB(0, 0, 0, 0),
           elevation: 0,
-
           centerTitle: true,
         ),
         backgroundColor: const Color.fromARGB(0, 32, 56, 100),
@@ -169,7 +259,8 @@ class HomeScreen extends StatelessWidget {
             width: double.infinity,
             margin: const EdgeInsets.only(left: 20, right: 20, top: 50),
             height: 100,
-            color: const Color.fromARGB(0, 46, 92, 154), // Set the background color directly
+            color: const Color.fromARGB(
+                0, 46, 92, 154), // Set the background color directly
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,7 +270,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-
       ),
     );
   }
