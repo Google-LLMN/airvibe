@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'Data/SharedPreferencesData.dart';
+import 'Data/dropDownMenuList.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 32, 56, 100),
-      appBar: DefaultAppBar(title: "Settings"),
+      appBar: const DefaultAppBar(title: "Settings"),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: double.infinity),
@@ -36,28 +37,50 @@ class _SettingsPageState extends State<SettingsPage> {
                                   const LocationSettingPage()));
                     },
                   ),
-                  CustomListTile(
-                      title: "Security Status",
-                      icon: CupertinoIcons.lock_shield,
-                      onTap: () {}),
                 ],
               ),
               const Divider(),
               _SingleSection(
-                title: "Manage",
+                title: "Other",
                 children: [
                   CustomListTile(
                       title: "Account",
                       icon: Icons.account_circle_outlined,
-                      onTap: () {}),
+                      onTap: () {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          behavior: SnackBarBehavior.fixed,
+                          content: Text(
+                            "Coming Soon...",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          duration: Duration(seconds: 2),
+                          backgroundColor: Colors.white,
+                        ));
+                      }),
                   CustomListTile(
                       title: "Help & Feedback",
                       icon: Icons.help_outline_rounded,
-                      onTap: () {}),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const HelpAndFeedbackPage()));
+                      }),
                   CustomListTile(
                       title: "About",
                       icon: Icons.info_outline_rounded,
-                      onTap: () {}),
+                      onTap: () {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          behavior: SnackBarBehavior.fixed,
+                          content: Text("Coming Soon...",
+                              style: TextStyle(color: Colors.black)),
+                          duration: Duration(seconds: 2),
+                          backgroundColor: Colors.white,
+                        ));
+                      }),
                 ],
               ),
             ],
@@ -162,11 +185,220 @@ class LocationSettingPage extends StatefulWidget {
 
 class _LocationSettingPageState extends State<LocationSettingPage> {
   @override
+  void initState() {
+    super.initState();
+    _loadSavedValues();
+  }
+
+  void _loadSavedValues() async {
+    String? savedCity = await SharedPreferencesUtils.getSelectedAUState();
+    String? savedUrban = await SharedPreferencesUtils.getSelectedUrban();
+
+    setState(() {
+      selectedState = savedCity;
+      selectedUrban = savedUrban;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        backgroundColor: Color.fromARGB(255, 32, 56, 100),
-        appBar: DefaultAppBar(
-          title: "My Location",
-        ));
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 32, 56, 100),
+      appBar: const DefaultAppBar(
+        title: "My Location",
+      ),
+      body: Center(
+        child: Container(
+          width: 300,
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _title("Select City"),
+                Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 56, 98, 176),
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: _dropDownState(
+                      underline: Container(),
+                      style: const TextStyle(color: Colors.white),
+                      dropdownColor: const Color.fromARGB(255, 56, 98, 176),
+                      iconEnabledColor: Colors.white,
+                      hintStyle: const TextStyle(color: Colors.white),
+                    )),
+                _title("Select Town"),
+                Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 56, 98, 176),
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: _dropDownUrban(
+                      underline: Container(),
+                      style: const TextStyle(color: Colors.white),
+                      dropdownColor: const Color.fromARGB(255, 56, 98, 176),
+                      iconEnabledColor: Colors.white,
+                      hintStyle: const TextStyle(color: Colors.white),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _title(String val) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        val,
+        style:
+            const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    );
+  }
+
+  // Function to switch to correct town according to the currently selected state
+  List<String> getUrbanTowns(String city) {
+    switch (city) {
+      case 'Australian Capital Territory':
+        return urbanCentersACT;
+      case 'New South Wales':
+        return urbanCentersNSW;
+      case 'Northern Territory':
+        return urbanCentersNT;
+      case 'Queensland':
+        return urbanCentersQLD;
+      case 'South Australia':
+        return urbanCentersSA;
+      case 'Tasmania':
+        return urbanCentersTAS;
+      case 'Victoria':
+        return urbanCentersVIC;
+      case 'Western Australia':
+        return urbanCentersWA;
+      default:
+        return ['Default City 1', 'Default City 2'];
+    }
+  }
+
+  // Function dropdown menu for State in Australia
+  Widget _dropDownState({
+    Widget? underline,
+    Widget? icon,
+    TextStyle? style,
+    TextStyle? hintStyle,
+    Color? dropdownColor,
+    Color? iconEnabledColor,
+  }) {
+    return DropdownButton<String>(
+      value: selectedState,
+      underline: underline,
+      icon: icon,
+      dropdownColor: dropdownColor,
+      style: style,
+      iconEnabledColor: iconEnabledColor,
+      onChanged: (String? newAUState) async {
+        setState(() {
+          selectedState = newAUState;
+          selectedUrban = null;
+        });
+        await SharedPreferencesUtils.saveSelectedAUState(newAUState!);
+      },
+      hint: Text("Select a city", style: hintStyle),
+      items: stateAU
+          .map((city) =>
+              DropdownMenuItem<String>(value: city, child: Text(city)))
+          .toList(),
+    );
+  }
+
+  // Function dropdown menu for City in selected state. see getUrbanTowns()
+  Widget _dropDownUrban({
+    Widget? underline,
+    Widget? icon,
+    TextStyle? style,
+    TextStyle? hintStyle,
+    Color? dropdownColor,
+    Color? iconEnabledColor,
+  }) {
+    List<String> urbanTowns =
+        selectedState != null ? getUrbanTowns(selectedState!) : [];
+
+    return DropdownButton<String>(
+      value: selectedUrban,
+      underline: underline,
+      icon: icon,
+      dropdownColor: dropdownColor,
+      style: style,
+      iconEnabledColor: iconEnabledColor,
+      onChanged: (String? newAUUrban) async {
+        setState(() {
+          selectedUrban = newAUUrban;
+        });
+        await SharedPreferencesUtils.saveSelectedUrban(newAUUrban!);
+      },
+      hint: Text("Select a city", style: hintStyle),
+      items: urbanTowns
+          .map((city) =>
+              DropdownMenuItem<String>(value: city, child: Text(city)))
+          .toList(),
+    );
+  }
+}
+
+class HelpAndFeedbackPage extends StatelessWidget {
+  const HelpAndFeedbackPage({super.key});
+  _launchURLout(String aLink) async {
+    Uri uri = Uri.parse(aLink);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      // can't launch url
+      throw Exception('Could not launch $uri');
+    }
+  }
+
+  // Unused for now
+
+  /*
+  _launchURLin(String aLink, ) async {
+    Uri uri = Uri.parse(aLink);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.platformDefault);
+    } else {
+      // can't launch url
+      throw Exception('Could not launch $uri');
+    }
+  }
+  */
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 32, 56, 100),
+      appBar: const DefaultAppBar(title: 'Help & Feedback'),
+      body: Center(
+          child: ListView(
+        children: [
+          CustomListTile(
+            title: "Contact me",
+            icon: Icons.help,
+            onTap: () {
+              _launchURLout('rungritza2580@gmail.com');
+            },
+          ),
+          CustomListTile(
+            title: "Feedback",
+            icon: Icons.feedback,
+            onTap: () {
+              _launchURLout("https://github.com/Google-LLMN/airvibe/issues");
+            },
+          )
+        ],
+      )),
+    );
   }
 }
