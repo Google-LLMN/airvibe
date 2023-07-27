@@ -6,8 +6,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // Required to get data from website
 import 'package:html/parser.dart' as parser; // Also required
-import 'setting.dart' show SettingsPage;
+import 'Data/SharedPreferencesData.dart';
+import 'setting.dart';
 import 'dart:async';
+
+class Result {
+  String? auState;
+  String? auTown;
+
+  Result(this.auState, this.auTown);
+}
 
 class AQIRipper extends StatefulWidget {
   const AQIRipper({super.key});
@@ -17,7 +25,6 @@ class AQIRipper extends StatefulWidget {
 }
 
 class AQIWidgetState extends State<AQIRipper> {
-
   // A SnackBar to use with _refreshDataWithDebounce()
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -53,7 +60,6 @@ class AQIWidgetState extends State<AQIRipper> {
   // This one is used for refresh data
   // Tell me if you come up with a better solution
   Future<void> _refreshData() async {
-
     setState(() {
       _aqi = '...';
       _message = 'Loading..';
@@ -63,17 +69,35 @@ class AQIWidgetState extends State<AQIRipper> {
     await fetchData(
       'http://www.bom.gov.au/vic/forecasts/melbourne.shtml',
       'summary',
-          (newValue) {
+      (newValue) {
         setState(() {
           _weatherScale = '•   $newValue';
         });
       },
     );
+    String? auTown = await SharedPreferencesUtils.getSelectedUrban();
+    String? auState = await SharedPreferencesUtils.getSelectedAUState();
+    if (auState != null) {
+      auState = auState.toLowerCase();
+    }
+
+    if (auTown != null) {
+      auTown = auTown.toLowerCase();
+    } else {
+      // Keep an eye on this if there is a bug!
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text("Please select your location inside the setting page"),
+        duration: Duration(seconds: 4),
+        backgroundColor: Colors.redAccent,
+      ));
+    }
 
     await fetchData(
-      'https://www.iqair.com/australia',
-      'aqi-box-green description__header__number iqair-aqi-pill',
-          (newValue) {
+      'https://www.iqair.com/australia/$auState/$auTown',
+      'aqi-value__value',
+      (newValue) {
         setState(() {
           _aqi = newValue;
         });
@@ -81,32 +105,15 @@ class AQIWidgetState extends State<AQIRipper> {
     );
     textFeedback(_aqi);
   }
+
   String _aqi = '...';
   String _message = 'Loading..';
-  String _weatherScale = 'Loading..'; // TODO Implement proper weather system
+  String _weatherScale = 'Loading..';
 
   @override
   void initState() {
     super.initState();
-
-    fetchData(
-      'http://www.bom.gov.au/vic/forecasts/melbourne.shtml',
-      'summary',
-      (newValue) {
-        setState(() {
-          _weatherScale = '•   $newValue';
-        });
-      },
-    );
-    fetchData(
-      'https://www.iqair.com/australia',
-      'aqi-box-green description__header__number iqair-aqi-pill',
-      (newValue) {
-        setState(() {
-          _aqi = newValue;
-        });
-      },
-    );
+    _refreshData();
   }
 
   // This function fetchData from the website.
@@ -134,7 +141,7 @@ class AQIWidgetState extends State<AQIRipper> {
       }
     } else {
       setState(() {
-        updateVariable(':(');
+        updateVariable('...');
       });
     }
   }
@@ -144,25 +151,25 @@ class AQIWidgetState extends State<AQIRipper> {
   Future<void> textFeedback(String number) async {
     try {
       int aqi = int.parse(number);
-      if (aqi < 35) {
+      if (aqi < 45) {
         setState(() {
-          _message = "•   Nothing to worry";
+          _message = "•   Enjoy the fresh air today!";
         });
-      } else if (aqi >= 35 && aqi < 60) {
+      } else if (aqi >= 45 && aqi < 80) {
         setState(() {
-          _message = "•   Recommended to wear a mask";
+          _message = "•   Consider wearing a mask for added protection.";
         });
-      } else if (aqi >= 60 && aqi < 100) {
+      } else if (aqi >= 80 && aqi < 120) {
         setState(() {
-          _message = "•   Sensitive people should avoid going outside";
+          _message = "•   Sensitive individuals, stay indoors if possible.";
         });
-      } else if (aqi >= 100 && aqi < 160) {
+      } else if (aqi >= 120 && aqi < 160) {
         setState(() {
-          _message = "•   Wear a mask if you can";
+          _message = "•   Don't forget your mask when outdoors.";
         });
       } else {
         setState(() {
-          _message = "•   You should avoid going outside today";
+          _message = "•   It's best to stay indoors today.";
         });
       }
     } catch (e) {
@@ -219,7 +226,8 @@ class AQIWidgetState extends State<AQIRipper> {
                     onPressed: _refreshDataWithDebounce,
                     backgroundColor: const Color(0x00000000),
                     elevation: 0,
-                    child: const Icon(Icons.refresh, size: 15, color: Colors.white),
+                    child: const Icon(Icons.refresh,
+                        size: 15, color: Colors.white),
                   )),
             ))
       ],
