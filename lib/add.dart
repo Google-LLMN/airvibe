@@ -3,17 +3,128 @@
 
 import 'package:flutter/material.dart';
 
-class AddScreen extends StatelessWidget {
-  const AddScreen({Key? key}) : super(key: key);
+class ScreenTabBar extends StatefulWidget {
+  const ScreenTabBar({Key? key}) : super(key: key);
+
+  @override
+  State<ScreenTabBar> createState() => _ScreenTabBarState();
+}
+
+class _ScreenTabBarState extends State<ScreenTabBar>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  final _selectedColor = const Color.fromARGB(255, 15, 27, 48);
+  final _tabs = [
+    const Tab(text: 'Surveys'),
+    const Tab(text: 'Result'),
+    const Tab(text: 'Create'),
+  ];
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 3, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 44, 77, 138),
+        title: const Text("Survey"),
+        backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+        elevation: 0,
       ),
       backgroundColor: const Color.fromARGB(255, 32, 56, 100),
-      body: const Center(
-        child: Text('Coming Soon...', style: TextStyle(color: Colors.white)),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            Container(
+              height: kToolbarHeight - 8.0,
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(35.0),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(35.0),
+                    color: _selectedColor),
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white24,
+                tabs: _tabs,
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  SurveyScreen(),
+                  ResultScreen(),
+                  CreateScreen(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SurveyScreen extends StatelessWidget {
+  const SurveyScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Survey Screen'),
+    );
+  }
+}
+
+class ResultScreen extends StatelessWidget {
+  const ResultScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Result Screen'),
+    );
+  }
+}
+
+// Create survey screen. Unused for now
+// TODO: Make use of it
+class CreateScreen extends StatelessWidget {
+  const CreateScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100)),
+        tooltip: 'Create',
+        heroTag: 'Create',
+        backgroundColor: Colors.green[400],
+        child: const Icon(Icons.add_circle, size: 40, color: Colors.white),
+        onPressed: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.fixed,
+          content: Text("You do not have a permission to do that"),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.redAccent,
+        ));
+        },
       ),
     );
   }
