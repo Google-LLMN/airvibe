@@ -387,7 +387,7 @@ class HelpAndFeedbackPage extends StatelessWidget {
             title: "Contact me",
             icon: Icons.help,
             onTap: () {
-              _launchURLout('rungritza2580@gmail.com');
+              _launchURLout('https://mail.google.com/?fs=1&tf=cm&source=mailto&to=rungritza2580@gmail.com');
             },
           ),
           CustomListTile(
