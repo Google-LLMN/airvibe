@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'home.dart' show HomeScreen; // import home screen
 import 'news.dart' show NewsScreen; // import news screen
-import 'add.dart' show AddScreen; // import add screen
+import 'add.dart' show ScreenTabBar; // import add screen
 
 // Main method used to run an app. Very important!!!!111
 void main() => runApp(const MainStuff());
@@ -48,7 +48,7 @@ class _MainStatefullWidgetState extends State<MainStatefullWidget> {
   // i.e. When pressed the first button (from left), it will go to HomeScreen()
   final List<Widget> _pages = [
     const HomeScreen(),
-    NewsScreen(),
+    const NewsScreen(),
   ];
 
   // Function to handle the tap event of the BottomNavigationBar
@@ -91,12 +91,12 @@ class _MainStatefullWidgetState extends State<MainStatefullWidget> {
             heroTag: 'AddScreenTag',
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AddScreen()));
+                  MaterialPageRoute(builder: (context) => const ScreenTabBar()));
             },
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100)),
-            backgroundColor: Colors.green,
-            child: const Icon(Icons.add, size: 50, color: Colors.white),
+                backgroundColor: Colors.green,
+                child: const Icon(Icons.add, size: 50, color: Colors.white),
           ),
         ),
       ),
