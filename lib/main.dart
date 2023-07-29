@@ -27,21 +27,21 @@ class MainStuff extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(_style);
     return const MaterialApp(
-      home: MainStatefullWidget(),
+      home: MainStateFullWidget(),
     );
   }
 }
 
 // Called by the Welcome Page
 // This is a scaffold where it provide various widget such as bottomAppBar
-class MainStatefullWidget extends StatefulWidget {
-  const MainStatefullWidget({super.key});
+class MainStateFullWidget extends StatefulWidget {
+  const MainStateFullWidget({super.key});
 
   @override
-  State<MainStatefullWidget> createState() => _MainStatefullWidgetState();
+  State<MainStateFullWidget> createState() => _MainStateFullWidgetState();
 }
 
-class _MainStatefullWidgetState extends State<MainStatefullWidget> {
+class _MainStateFullWidgetState extends State<MainStateFullWidget> {
   int _selectedIndex = 0;
 
   // Define the pages and screens that correspond to each BottomNavigationBarItem.
