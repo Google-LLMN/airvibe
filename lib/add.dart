@@ -119,7 +119,7 @@ class CreateScreen extends StatelessWidget {
         onPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          behavior: SnackBarBehavior.fixed,
+          behavior: SnackBarBehavior.floating,
           content: Text("You do not have a permission to do that"),
           duration: Duration(seconds: 2),
           backgroundColor: Colors.redAccent,
