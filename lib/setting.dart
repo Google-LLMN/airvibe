@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Data/SharedPreferencesData.dart';
-import 'Data/dropDownMenuList.dart';
+import 'Data/shared_preferences_data.dart';
+import 'Data/drop_down_menu_list.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -49,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: () {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
-                          behavior: SnackBarBehavior.fixed,
+                          behavior: SnackBarBehavior.floating,
                           content: Text(
                             "Coming Soon...",
                             style: TextStyle(color: Colors.black),
@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: () {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
-                          behavior: SnackBarBehavior.fixed,
+                          behavior: SnackBarBehavior.floating,
                           content: Text("Coming Soon...",
                               style: TextStyle(color: Colors.black)),
                           duration: Duration(seconds: 2),
