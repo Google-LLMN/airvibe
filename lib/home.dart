@@ -4,18 +4,10 @@
 // TODO: Implement location searching using dropdown menu
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // Required to get data from website
-import 'package:html/parser.dart' as parser; // Also required
-import 'Data/SharedPreferencesData.dart';
+import 'Data/shared_preferences_data.dart';
+import 'Data/airvibe_methods.dart';
 import 'setting.dart';
 import 'dart:async';
-
-class Result {
-  String? auState;
-  String? auTown;
-
-  Result(this.auState, this.auTown);
-}
 
 class AQIRipper extends StatefulWidget {
   const AQIRipper({super.key});
@@ -36,12 +28,12 @@ class AQIWidgetState extends State<AQIRipper> {
     );
   }
 
-  // A waiting timer to prevent overload the website. (Maybe)
-  bool _isButtonDisabled = false;
+  // A waiting timer between each click
+  bool isButtonDisabled = false;
   void _refreshDataWithDebounce() {
-    if (!_isButtonDisabled) {
+    if (!isButtonDisabled) {
       setState(() {
-        _isButtonDisabled = true;
+        isButtonDisabled = true;
       });
 
       _showSnackBar("Please wait...");
@@ -50,7 +42,7 @@ class AQIWidgetState extends State<AQIRipper> {
       // Time delay between the reloading
       Timer(const Duration(seconds: 4), () {
         setState(() {
-          _isButtonDisabled = false;
+          isButtonDisabled = false;
         });
       });
     }
@@ -103,7 +95,7 @@ class AQIWidgetState extends State<AQIRipper> {
         });
       },
     );
-    textFeedback(_aqi);
+    textFeedback(anythingToInt(_aqi));
   }
 
   String _aqi = '...';
@@ -116,66 +108,37 @@ class AQIWidgetState extends State<AQIRipper> {
     _refreshData();
   }
 
-  // This function fetchData from the website.
-  // It needed the url or the website and the class name of that data you want to take
-  // Also now needed a variable that you want to update.
-  // Changed to make it more generic and reusable.
-  Future<void> fetchData(
-      String url, String urlClassName, Function(String) updateVariable) async {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      // Get the content from the website
-      final document = parser.parse(response.body);
-      // Find the specific element that contains the value then take it :)
-      final elements = document.getElementsByClassName(urlClassName);
-      if (elements.isNotEmpty) {
-        final value = elements.first.text.trim();
-        setState(() {
-          updateVariable(value);
-        });
-        textFeedback(value); // Call textFeedback after it got the value
-      } else {
-        setState(() {
-          updateVariable('NA');
-        });
-      }
-    } else {
-      setState(() {
-        updateVariable('...');
-      });
-    }
-  }
-
   // This function check the aqi scale and find out that you should go outside or not
   // Required string number and it changes the _message variable.
-  Future<void> textFeedback(String number) async {
-    try {
-      int aqi = int.parse(number);
-      if (aqi < 45) {
+  Future<void> textFeedback(int aqiNumber) async {
+    if (mounted) {
+      try {
+        if (aqiNumber < 45) {
+          setState(() {
+            _message = "•   Enjoy the fresh air today!";
+          });
+        } else if (aqiNumber >= 45 && aqiNumber < 80) {
+          setState(() {
+            _message = "•   Consider wearing a mask for added protection.";
+          });
+        } else if (aqiNumber >= 80 && aqiNumber < 120) {
+          setState(() {
+            _message = "•   Sensitive individuals, stay indoors if possible.";
+          });
+        } else if (aqiNumber >= 120 && aqiNumber < 160) {
+          setState(() {
+            _message = "•   Don't forget your mask when outdoors.";
+          });
+        } else {
+          setState(() {
+            _message = "•   It's best to stay indoors today.";
+          });
+        }
+      } catch (e) {
         setState(() {
-          _message = "•   Enjoy the fresh air today!";
-        });
-      } else if (aqi >= 45 && aqi < 80) {
-        setState(() {
-          _message = "•   Consider wearing a mask for added protection.";
-        });
-      } else if (aqi >= 80 && aqi < 120) {
-        setState(() {
-          _message = "•   Sensitive individuals, stay indoors if possible.";
-        });
-      } else if (aqi >= 120 && aqi < 160) {
-        setState(() {
-          _message = "•   Don't forget your mask when outdoors.";
-        });
-      } else {
-        setState(() {
-          _message = "•   It's best to stay indoors today.";
+          _message = "Loading...";
         });
       }
-    } catch (e) {
-      setState(() {
-        _message = "Loading...";
-      });
     }
   }
 
@@ -185,51 +148,148 @@ class AQIWidgetState extends State<AQIRipper> {
     const theAQITextStyle = TextStyle(fontSize: 10, color: Colors.white);
     const messageTextStyle = TextStyle(fontSize: 18, color: Colors.white);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
       children: [
-        Expanded(
-          flex: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _aqi,
-                style: theAQINumberTextStyle,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _aqi,
+                    style: theAQINumberTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                  const Text(
+                    'AQI',
+                    style: theAQITextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                '$_message\n$_weatherScale',
+                style: messageTextStyle,
                 textAlign: TextAlign.center,
               ),
-              const Text(
-                'AQI',
-                style: theAQITextStyle,
-                textAlign: TextAlign.center,
-              ),
-            ],
+            ),
+            Expanded(
+                flex: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  child: SizedBox(
+                      width: 15,
+                      height: 15,
+                      child: FloatingActionButton(
+                        onPressed: _refreshDataWithDebounce,
+                        backgroundColor: const Color(0x00000000),
+                        elevation: 0,
+                        child: const Icon(Icons.refresh,
+                            size: 15, color: Colors.white),
+                      )),
+                )),
+          ],
+        ),
+        const SizedBox(
+          height: 50,
+        ),
+        _PM25ScaleBar(percentage: anythingToInt(_aqi)),
+      ],
+    );
+  }
+}
+
+// Class for show the bar in colours
+class _PM25ScaleBar extends StatefulWidget {
+  final int percentage;
+  const _PM25ScaleBar({required this.percentage});
+
+  @override
+  _PM25ScaleBarState createState() => _PM25ScaleBarState();
+}
+
+class _PM25ScaleBarState extends State<_PM25ScaleBar> {
+  late double _animatedWidth;
+
+  @override
+  void initState() {
+    super.initState();
+    _animatedWidth = 0;
+    animateBar(widget.percentage);
+  }
+
+  void animateBar(int targetPercentage) {
+    final newWidth = (targetPercentage / 100) * 300;
+    setState(() {
+      _animatedWidth = newWidth;
+    });
+  }
+
+  @override
+  void didUpdateWidget(_PM25ScaleBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    animateBar(widget.percentage);
+  }
+
+  Color _getColorByPercentage(int percentage) {
+    if (percentage >= 0 && percentage < 20) {
+      return Colors.green;
+    } else if (percentage >= 20 && percentage < 30) {
+      return Colors.lightGreen;
+    } else if (percentage >= 30 && percentage < 40) {
+      return Colors.yellow;
+    } else if (percentage >= 40 && percentage < 50) {
+      return Colors.orangeAccent;
+    } else if (percentage >= 50 && percentage < 60) {
+      return Colors.deepOrangeAccent;
+    } else if (percentage >= 60 && percentage < 70) {
+      return Colors.deepOrange;
+    } else if (percentage >= 70 && percentage < 80) {
+      return Colors.red;
+    } else {
+      return Colors.red;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SizedBox(
+            height: 10,
+            width: 300,
+            child: Stack(
+              children: [
+                Container(
+                  color:
+                      _getColorByPercentage(widget.percentage).withAlpha(100),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 450),
+                  width: _animatedWidth,
+                  color: _getColorByPercentage(widget.percentage),
+                ),
+              ],
+            ),
           ),
         ),
-        Expanded(
-          flex: 2,
-          child: Text(
-            '$_message\n$_weatherScale',
-            style: messageTextStyle,
-            textAlign: TextAlign.center,
+        SizedBox(
+          width: 300,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(widget.percentage > 100 ? 'Too High' : 'Acceptable',
+                style: const TextStyle(color: Colors.white)),
           ),
-        ),
-        Expanded(
-            flex: 0,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: SizedBox(
-                  width: 15,
-                  height: 15,
-                  child: FloatingActionButton(
-                    onPressed: _refreshDataWithDebounce,
-                    backgroundColor: const Color(0x00000000),
-                    elevation: 0,
-                    child: const Icon(Icons.refresh,
-                        size: 15, color: Colors.white),
-                  )),
-            ))
+        )
       ],
     );
   }
@@ -237,6 +297,7 @@ class AQIWidgetState extends State<AQIRipper> {
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -254,7 +315,7 @@ class HomeScreen extends StatelessWidget {
           ],
           title: const Text(
             'Home',
-            style: TextStyle(fontSize: 30),
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           backgroundColor: const Color.fromARGB(0, 0, 0, 0),
           elevation: 0,
@@ -265,15 +326,18 @@ class HomeScreen extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: Container(
             width: double.infinity,
-            margin: const EdgeInsets.only(left: 20, right: 20, top: 50),
-            height: 100,
+            height: double.infinity,
+            margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
             color: const Color.fromARGB(
                 0, 46, 92, 154), // Set the background color directly
             child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 AQIRipper(),
+                SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),
