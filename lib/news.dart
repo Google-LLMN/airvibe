@@ -126,6 +126,7 @@ class _NewsScreenState extends State<NewsScreen> {
       _loadWebUrl();
     }
   }
+
   // Load the news sources based on what the user setting is.
   Future<void> _loadWebUrl() async {
     currentNewsSource = await SavedNewsSource.getSelectedNewsSource();
@@ -139,6 +140,8 @@ class _NewsScreenState extends State<NewsScreen> {
       webUrl = 'https://www.sbs.com.au/news/topic/environment';
     } else if (currentNewsSource == 4) {
       webUrl = 'https://www.9news.com.au/environment';
+    } else {
+      webUrl = '';
     }
 
     setState(() {
