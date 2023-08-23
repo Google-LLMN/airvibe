@@ -14,32 +14,36 @@ class WebViewStack extends StatefulWidget {
 
 class _WebViewStackState extends State<WebViewStack> {
   var loadingPercentage = 0;
-  // REMOVE the controller that was here
 
   @override
   void initState() {
     super.initState();
-    // Modify from here...
     widget.controller.setNavigationDelegate(
       NavigationDelegate(
+        // Hopefully this fixed asynchronous issue.
         onPageStarted: (url) {
-          setState(() {
-            loadingPercentage = 0;
-          });
+          if (mounted) {
+            setState(() {
+              loadingPercentage = 0;
+            });
+          }
         },
         onProgress: (progress) {
-          setState(() {
-            loadingPercentage = progress;
-          });
+          if (mounted) {
+            setState(() {
+              loadingPercentage = progress;
+            });
+          }
         },
         onPageFinished: (url) {
-          setState(() {
-            loadingPercentage = 100;
-          });
+          if (mounted) {
+            setState(() {
+              loadingPercentage = 100;
+            });
+          }
         },
       ),
     );
-    // ...to here.
   }
 
   @override
