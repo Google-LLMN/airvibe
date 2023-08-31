@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'Data/shared_preferences_data.dart';
 import 'Data/airvibe_methods.dart';
-import 'setting.dart';
+import 'setting.dart' show SettingsPage;
 import 'dart:async';
 
 class AQIRipper extends StatefulWidget {
@@ -67,8 +67,8 @@ class AQIWidgetState extends State<AQIRipper> {
         });
       },
     );
-    String? auTown = await SharedPreferencesUtils.getSelectedUrban();
-    String? auState = await SharedPreferencesUtils.getSelectedAUState();
+    String? auTown = await SavedLocation.getSelectedUrban();
+    String? auState = await SavedLocation.getSelectedAUState();
     if (auState != null) {
       auState = auState.toLowerCase();
     }
@@ -295,6 +295,223 @@ class _PM25ScaleBarState extends State<_PM25ScaleBar> {
   }
 }
 
+class AQIForeCast extends StatefulWidget {
+  const AQIForeCast({super.key});
+
+  @override
+  State<AQIForeCast> createState() => _AQIForeCastState();
+}
+
+class _AQIForeCastState extends State<AQIForeCast>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  final _selectedColor = const Color.fromARGB(255, 15, 27, 48);
+  final _tabs = [
+    const Tab(
+      icon: Icon(Icons.keyboard_double_arrow_left),
+    ),
+    const Tab(
+      icon: Icon(Icons.keyboard_arrow_left),
+    ),
+    const Tab(
+      icon: Icon(Icons.circle),
+    ),
+    const Tab(
+      icon: Icon(Icons.keyboard_arrow_right),
+    ),
+    const Tab(
+      icon: Icon(Icons.keyboard_double_arrow_right),
+    ),
+  ];
+
+  @override
+  void initState() {
+    _tabController =
+        TabController(length: _tabs.length, vsync: this, initialIndex: 2);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 32, 56, 100),
+      body: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: _selectedColor),
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white24,
+              tabs: _tabs,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20.0), // Adjust the radius
+              ),
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  TwoDaysAgoScreen(),
+                  YesterdayScreen(),
+                  TodayScreen(),
+                  TomorrowScreen(),
+                  NextTwoDaysScreen(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AQIReportScreen extends StatefulWidget {
+  final String title;
+  final String urlSegment;
+  final int rowTable;
+
+  const AQIReportScreen({
+    Key? key,
+    required this.title,
+    required this.urlSegment,
+    required this.rowTable,
+  }) : super(key: key);
+
+  @override
+  State<AQIReportScreen> createState() => _AQIReportScreenState();
+}
+
+class _AQIReportScreenState extends State<AQIReportScreen> {
+  Future<void> _refreshData() async {
+    setState(() {
+      _aqi = '...';
+    });
+    String? auTown = await SavedLocation.getSelectedUrban();
+    String? auState = await SavedLocation.getSelectedAUState();
+    if (auState != null) {
+      auState = auState.toLowerCase();
+    }
+
+    if (auTown != null) {
+      auTown = auTown.toLowerCase();
+    } else {
+      // Keep an eye on this if there is a bug!
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text("Please select your location inside the setting page"),
+        duration: Duration(seconds: 4),
+        backgroundColor: Colors.redAccent,
+      ));
+    }
+
+    await fetchDataFromTable(
+      'https://www.iqair.com/australia/$auState/$auTown',
+      '.aqi-forecast__weekly-forecast-table',
+      widget.rowTable,
+      (newValue) {
+        setState(() {
+          _aqi = newValue;
+        });
+      },
+    );
+  }
+
+  String _aqi = '...';
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 150,
+      color: const Color.fromARGB(255, 58, 101, 183),
+    );
+  }
+}
+
+class TodayScreen extends StatefulWidget {
+  const TodayScreen({super.key});
+
+  @override
+  State<TodayScreen> createState() => _TodayScreenState();
+}
+
+class _TodayScreenState extends State<TodayScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: const Color.fromARGB(255, 58, 101, 183)),
+      width: double.infinity,
+      height: 150,
+
+    );
+  }
+}
+
+
+class TomorrowScreen extends AQIReportScreen {
+  const TomorrowScreen({super.key})
+      : super(
+          title: 'Tomorrow',
+          urlSegment: 'australia',
+          rowTable: 5,
+        );
+}
+
+class YesterdayScreen extends AQIReportScreen {
+  const YesterdayScreen({super.key})
+      : super(
+          title: 'Yesterday',
+          urlSegment: 'australia',
+          rowTable: 3,
+        );
+}
+
+class TwoDaysAgoScreen extends AQIReportScreen {
+  const TwoDaysAgoScreen({super.key})
+      : super(
+          title: 'Two Days Ago',
+          urlSegment: 'australia',
+          rowTable: 2,
+        );
+}
+
+class NextTwoDaysScreen extends AQIReportScreen {
+  const NextTwoDaysScreen({super.key})
+      : super(
+          title: 'Next Two Days',
+          urlSegment: 'australia',
+          rowTable: 6,
+        );
+}
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -338,6 +555,11 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
+                SizedBox(
+                  width: 330,
+                  height: 150,
+                  child: AQIForeCast(),
+                )
               ],
             ),
           ),
