@@ -2,6 +2,7 @@
 // TODO: Finish add page
 
 import 'package:flutter/material.dart';
+import 'Data/airvibe_methods.dart';
 
 class ScreenTabBar extends StatefulWidget {
   const ScreenTabBar({Key? key}) : super(key: key);
@@ -84,8 +85,18 @@ class SurveyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Survey Screen. Coming Soon...', style: TextStyle(color: Colors.white)),
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 32, 56, 100),
+      body: ListView(
+        children: const [
+          Divider(height: 30),
+          SingleSection(
+            title: "Environment",
+              children: [
+            CustomListTile(title: 'First', icon: Icons.find_in_page_rounded)
+          ])
+        ],
+      )
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'Data/shared_preferences_data.dart';
 import 'Data/drop_down_menu_list.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'Data/airvibe_methods.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
           constraints: const BoxConstraints(maxWidth: double.infinity),
           child: ListView(
             children: [
-              _SingleSection(
+              SingleSection(
                 title: "General",
                 children: [
                   CustomListTile(
@@ -51,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
               const Divider(),
-              _SingleSection(
+              SingleSection(
                 title: "Other",
                 children: [
                   CustomListTile(
@@ -102,89 +103,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-// Class to create new ListTile
-class CustomListTile extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-  const CustomListTile({
-    Key? key,
-    required this.title,
-    required this.icon,
-    this.trailing,
-    this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      leading: Icon(icon),
-      trailing: trailing,
-      textColor: Colors.white,
-      iconColor: Colors.white,
-      onTap: onTap,
-    );
-  }
-}
-
-// Class to create a separation.
-class _SingleSection extends StatelessWidget {
-  final String? title;
-  final List<Widget> children;
-  const _SingleSection({
-    Key? key,
-    this.title,
-    required this.children,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (title != null)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title!,
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-        Column(
-          children: children,
-        ),
-      ],
-    );
-  }
-}
-
-// Class for default AppBar
-class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-
-  const DefaultAppBar({super.key, required this.title});
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.white),
-      ),
-      elevation: 0,
-      backgroundColor: const Color(0x00000000),
-    );
-  }
-}
 
 // Setting page for 'My Location'
 class LocationSettingPage extends StatefulWidget {

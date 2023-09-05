@@ -1,7 +1,6 @@
 // For the home page. When you clicked the 'Home' at the bottom of the app
 // contains everything that you can see when you click home button
 // TODO: Finish home page
-// TODO: Implement location searching using dropdown menu
 
 import 'package:flutter/material.dart';
 import 'Data/shared_preferences_data.dart';
@@ -28,7 +27,7 @@ class AQIWidgetState extends State<AQIRipper> {
     );
   }
 
-  // A waiting timer between each click
+  // A waiting timer between each click of the reload button
   bool isButtonDisabled = false;
   void _refreshDataWithDebounce() {
     if (!isButtonDisabled) {
@@ -57,6 +56,7 @@ class AQIWidgetState extends State<AQIRipper> {
       _message = 'Loading..';
       _weatherScale = 'Loading..';
     });
+
 
     await fetchData(
       'http://www.bom.gov.au/vic/forecasts/melbourne.shtml',
@@ -96,6 +96,7 @@ class AQIWidgetState extends State<AQIRipper> {
       },
     );
     textFeedback(anythingToInt(_aqi));
+    if (!mounted) return;
   }
 
   String _aqi = '...';
@@ -111,6 +112,7 @@ class AQIWidgetState extends State<AQIRipper> {
   // This function check the aqi scale and find out that you should go outside or not
   // Required string number and it changes the _message variable.
   Future<void> textFeedback(int aqiNumber) async {
+
     if (mounted) {
       try {
         if (aqiNumber < 45) {

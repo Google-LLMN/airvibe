@@ -1,4 +1,7 @@
+// This file can store permanent data that you want to save
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Experimental. May cause memory leak. (No its not.)
 class SavedLocation {
