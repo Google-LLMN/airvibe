@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the fetchDataFromTable function from the airvibe_methods library, for the Dart programming language.">
+  <title>fetchDataFromTable function - airvibe_methods library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">airvibe</a></li>
+    <li><a href="../Data_airvibe_methods/Data_airvibe_methods-library.html">airvibe_methods</a></li>
+    <li class="self-crumb">fetchDataFromTable function</li>
+  </ol>
+  <div class="self-name">fetchDataFromTable</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">fetchDataFromTable</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">fetchDataFromTable</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="fetchDataFromTable-param-urlDestination"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">urlDestination</span>, </span></li>
+<li><span class="parameter" id="fetchDataFromTable-param-classDestination"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">classDestination</span>, </span></li>
+<li><span class="parameter" id="fetchDataFromTable-param-classSelection"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">classSelection</span>, </span></li>
+<li><span class="parameter" id="fetchDataFromTable-param-rowTable"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">rowTable</span>, </span></li>
+<li><span class="parameter" id="fetchDataFromTable-param-updateVariable"><span class="type-annotation">dynamic</span> <span class="parameter-name">updateVariable</span>(<ol class="parameter-list"><li><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span></span></li>
+</ol>
+), </span></li>
+<li><span class="parameter" id="fetchDataFromTable-param-onError">{<span class="type-annotation">dynamic</span> <span class="parameter-name">onError</span>(<ol class="parameter-list"><li><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span></span></li>
+</ol>
+)?, </span></li>
+<li><span class="parameter" id="fetchDataFromTable-param-useNestedRow"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">useNestedRow</span> = <span class="default-value">false</span>}</span></li>
+</ol>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>This function get information from website's table
+See export_page.dart for reference</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; fetchDataFromTable(
+  String urlDestination,
+  String classDestination,
+  String classSelection,
+  int rowTable,
+  Function(String) updateVariable, {
+  Function(String)? onError,
+  bool useNestedRow = false,
+}) async {
+  final response = await http.get(Uri.parse(urlDestination));
+  if (response.statusCode == 200) {
+    final document = parser.parse(response.body);
+    final table = document.querySelector(classDestination);
+
+    if (table != null) {
+      final rows = table.querySelectorAll(&#39;tr&#39;);
+      if (rows.isNotEmpty) {
+        final withinRow = rows[rowTable];
+
+        if (useNestedRow) {
+          final pollutantNameElement = withinRow.querySelector(&#39;td&#39;);
+          final tableValueElement = withinRow.querySelector(classSelection);
+
+          if (pollutantNameElement != null &amp;&amp; tableValueElement != null) {
+            final pollutantName = pollutantNameElement.text.trim();
+            final todayAQIValue = tableValueElement.text.trim();
+
+            if (pollutantName.isNotEmpty &amp;&amp; todayAQIValue.isNotEmpty) {
+              updateVariable(todayAQIValue);
+            } else {
+              updateVariable(&#39;NA&#39;);
+            }
+          } else {
+            updateVariable(&#39;NA&#39;);
+          }
+        } else {
+          final todayAQIValueElement = withinRow.querySelector(classSelection);
+          if (todayAQIValueElement != null) {
+            final todayAQIValue = todayAQIValueElement.text.trim();
+            if (todayAQIValue.isNotEmpty) {
+              updateVariable(todayAQIValue);
+            } else {
+              updateVariable(&#39;NA&#39;);
+            }
+          } else {
+            updateVariable(&#39;NA&#39;);
+          }
+        }
+      } else {
+        updateVariable(&#39;NA&#39;);
+      }
+    } else {
+      updateVariable(&#39;NA&#39;);
+    }
+  } else {
+    if (onError != null) {
+      onError(&quot;Error: Status Code ${response.statusCode}&quot;);
+    }
+    updateVariable(&#39;Error&#39;);
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">airvibe</a></li>
+  <li><a href="../Data_airvibe_methods/Data_airvibe_methods-library.html">airvibe_methods</a></li>
+  <li class="self-crumb">fetchDataFromTable function</li>
+</ol>
+
+
+    <h5>airvibe_methods library</h5>
+    <ol>
+      <li class="section-title"><a href="../Data_airvibe_methods/Data_airvibe_methods-library.html#classes">Classes</a></li>
+        <li><a href="../Data_airvibe_methods/CustomListTile-class.html">CustomListTile</a></li>
+        <li><a href="../Data_airvibe_methods/DefaultAppBar-class.html">DefaultAppBar</a></li>
+        <li><a href="../Data_airvibe_methods/GenQuestion-class.html">GenQuestion</a></li>
+        <li><a href="../Data_airvibe_methods/QuestionWidget-class.html">QuestionWidget</a></li>
+        <li><a href="../Data_airvibe_methods/SingleSection-class.html">SingleSection</a></li>
+
+
+
+
+
+      <li class="section-title"><a href="../Data_airvibe_methods/Data_airvibe_methods-library.html#functions">Functions</a></li>
+        <li><a href="../Data_airvibe_methods/anythingToInt.html">anythingToInt</a></li>
+        <li><a href="../Data_airvibe_methods/exportDataToCsv.html">exportDataToCsv</a></li>
+        <li><a href="../Data_airvibe_methods/exportTextToFile.html">exportTextToFile</a></li>
+        <li><a href="../Data_airvibe_methods/fetchData.html">fetchData</a></li>
+        <li><a href="../Data_airvibe_methods/fetchDataFromTable.html">fetchDataFromTable</a></li>
+        <li><a href="../Data_airvibe_methods/showFloatingSnackBar.html">showFloatingSnackBar</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    airvibe
+      1.0.0+1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
