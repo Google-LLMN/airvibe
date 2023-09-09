@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'Data/airvibe_methods.dart';
+import 'SurveyData/carbon_emission_survey1.dart';
 
 class ScreenTabBar extends StatefulWidget {
   const ScreenTabBar({Key? key}) : super(key: key);
@@ -86,18 +87,22 @@ class SurveyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 32, 56, 100),
-      body: ListView(
-        children: const [
-          Divider(height: 30),
-          SingleSection(
-            title: "Environment",
-              children: [
-            CustomListTile(title: 'First', icon: Icons.find_in_page_rounded)
-          ])
-        ],
-      )
-    );
+        backgroundColor: const Color.fromARGB(255, 32, 56, 100),
+        body: ListView(
+          children: [
+            Divider(height: 30),
+            SingleSection(title: "Environment", children: [
+              CustomListTile(
+                title: 'Carbon Emission',
+                icon: Icons.find_in_page_rounded,
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SurveyPage()));
+                },
+              )
+            ])
+          ],
+        ));
   }
 }
 
@@ -107,7 +112,8 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Result Screen. Coming Soon...', style: TextStyle(color: Colors.white)),
+      child: Text('No result yet',
+          style: TextStyle(color: Colors.white)),
     );
   }
 }
@@ -121,20 +127,18 @@ class CreateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: FloatingActionButton(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(100)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         tooltip: 'Create',
         heroTag: 'Create',
         backgroundColor: Colors.green[400],
         child: const Icon(Icons.add_circle, size: 40, color: Colors.white),
         onPressed: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text("You do not have a permission to do that"),
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.redAccent,
-        ));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text("You do not have a permission to do that"),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.redAccent,
+          ));
         },
       ),
     );
