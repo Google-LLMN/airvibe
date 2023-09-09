@@ -1,3 +1,5 @@
+/// Setting what website the news page will show
+
 import 'package:flutter/material.dart';
 import '../Data/airvibe_methods.dart';
 import '../Data/shared_preferences_data.dart';
@@ -24,13 +26,13 @@ class _NewsSourceSettingPageState extends State<NewsSourceSettingPage> {
 
     setState(() {
       selectedValue = newsSource ?? 1;
-      isLoading = false; // Use 1 as the default value if newsSource is null
+      isLoading = false; // Use 1 as the default value if newsSource is null.
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading // loading screen while the getSelectedNewsSource is not yet complete
+    return isLoading // loading screen while the getSelectedNewsSource is not yet complete.
         ? const Center(
       child: SizedBox(
         width: 48,

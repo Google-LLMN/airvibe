@@ -1,8 +1,10 @@
+/// A News page to display news when you pressed the news button.
+
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'Data/shared_preferences_data.dart';
 
-// Source: https://codelabs.developers.google.com/codelabs/flutter-webview
+/// Source: https://codelabs.developers.google.com/codelabs/flutter-webview
 class WebViewStack extends StatefulWidget {
   const WebViewStack({required this.controller, super.key});
 
@@ -118,7 +120,7 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   @override
-  // This will call _loadWebUrl() when the news source changes
+  /// This will call _loadWebUrl() when the news source changes
   void didUpdateWidget(NewsScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
 
@@ -127,7 +129,7 @@ class _NewsScreenState extends State<NewsScreen> {
     }
   }
 
-  // Load the news sources based on what the user setting is.
+  /// Load the news sources based on what the user setting is.
   Future<void> _loadWebUrl() async {
     currentNewsSource = await SavedNewsSource.getSelectedNewsSource();
     String webUrl = '';

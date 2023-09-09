@@ -1,4 +1,4 @@
-// This file can store permanent data that you want to save
+/// This file can store permanent data that you want to save
 
 import 'package:shared_preferences/shared_preferences.dart';
 

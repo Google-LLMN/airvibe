@@ -35,6 +35,15 @@ class ExportConfirmationDialog extends StatelessWidget {
 class ExportSimpleDataScreen extends StatelessWidget {
   const ExportSimpleDataScreen({super.key});
 
+  /// function to get data from various sources to export as CSV
+  /// Future function use await
+  /// Will return List with in List i.e.
+  /// importedData = [
+  ///                ['Name', 's', 'City'],
+  ///                ['John', 30, 'New York'],
+  ///                ['Alice', 25, 'Los Angeles'],
+  ///                ['Bob', 35, 'Chicago'],
+  ///               ];
   Future<List<List<dynamic>>> _getsData() async {
     String weather = 'NA';
     String aqiTomorrow = 'NA';

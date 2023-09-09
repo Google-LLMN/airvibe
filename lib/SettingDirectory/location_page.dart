@@ -1,9 +1,10 @@
+/// Setting page for 'My Location'
+
 import 'package:flutter/material.dart';
 import '../Data/airvibe_methods.dart';
 import '../Data/shared_preferences_data.dart';
 import '../Data/drop_down_menu_list.dart';
 
-// Setting page for 'My Location'
 class LocationSettingPage extends StatefulWidget {
   const LocationSettingPage({super.key});
 
@@ -88,7 +89,7 @@ class _LocationSettingPageState extends State<LocationSettingPage> {
     );
   }
 
-  // Function to switch to correct town according to the currently selected state
+  /// Function to switch to correct town according to what is the current selected state.
   List<String> getUrbanTowns(String city) {
     switch (city) {
       case 'Australian Capital Territory':
@@ -112,7 +113,7 @@ class _LocationSettingPageState extends State<LocationSettingPage> {
     }
   }
 
-  // Function dropdown menu for State in Australia
+  /// Function dropdown menu for State in Australia.
   Widget _dropDownState({
     Widget? underline,
     Widget? icon,
@@ -143,7 +144,7 @@ class _LocationSettingPageState extends State<LocationSettingPage> {
     );
   }
 
-  // Function dropdown menu for City in selected state. see getUrbanTowns()
+  /// Function dropdown menu for City in selected state. see getUrbanTowns().
   Widget _dropDownUrban({
     Widget? underline,
     Widget? icon,

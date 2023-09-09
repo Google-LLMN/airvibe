@@ -1,4 +1,4 @@
-// List of all cities and towns in Australia
+/// List of all cities and towns in Australia
 
 String? selectedState;
 String? selectedUrban;

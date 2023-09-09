@@ -17,7 +17,7 @@ class AQIRipper extends StatefulWidget {
 
 class AQIWidgetState extends State<AQIRipper> {
 
-  // A waiting timer between each click of the reload button
+  /// A waiting timer between each click of the reload button.
   bool isButtonDisabled = false;
   void _refreshDataWithDebounce() {
     if (!isButtonDisabled) {
@@ -98,8 +98,8 @@ class AQIWidgetState extends State<AQIRipper> {
     _refreshData();
   }
 
-  // This function check the aqi scale and find out that you should go outside or not
-  // Required string number and it changes the _message variable.
+  /// This function check the aqi scale and find out that you should go outside or not.
+  /// Required string number and it changes the _message variable.
   Future<void> textFeedback(int aqiNumber) async {
     if (mounted) {
       try {
@@ -196,7 +196,7 @@ class AQIWidgetState extends State<AQIRipper> {
   }
 }
 
-// Class for show the bar in colours
+/// Class for show the percentage bar in colours.
 class _PM25ScaleBar extends StatefulWidget {
   final int percentage;
   const _PM25ScaleBar({required this.percentage});

@@ -1,5 +1,5 @@
-// This file will be used to stored all the common use classes or methods
-// Note that not every class or function will store here (I tried)
+/// This file will be used to stored all the common use classes or methods
+/// Note that not every class or function will store here (I tried)
 
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -10,9 +10,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:csv/csv.dart';
 
-// This function fetchData from the website.
-// It needed the url or the website and the class name of that data you want to take
-// Also now needed a variable that you want to update.
+/// This function fetchData from the website.
+/// It needed the url or the website and the class name of that data you want to take
+/// Also now needed a variable that you want to update.
 Future<void> fetchData(
     String url, String urlClassName, Function(String) updateVariable,
     {Function(String)? onError}) async {
@@ -34,7 +34,8 @@ Future<void> fetchData(
   }
 }
 
-// Convert anything to int
+/// Convert anything to int
+/// Accept any variable
 int anythingToInt(dynamic someVariable) {
   try {
     // Replace everything except 0-9
@@ -46,8 +47,8 @@ int anythingToInt(dynamic someVariable) {
   }
 }
 
-// This function get information from website's table
-// See export_page.dart for reference
+/// This function get information from website's table
+/// See export_page.dart for reference
 Future<void> fetchDataFromTable(
   String urlDestination,
   String classDestination,
@@ -110,7 +111,8 @@ Future<void> fetchDataFromTable(
   }
 }
 
-// Class to create new ListTile
+/// Class to create new ListTile
+/// Required title and icon of the tile
 class CustomListTile extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -137,8 +139,8 @@ class CustomListTile extends StatelessWidget {
   }
 }
 
-// Class to create a separation
-// Use this before CustomListTile to create empty space with text
+/// Class to create a separation
+/// Use this before CustomListTile to create empty space with text
 class SingleSection extends StatelessWidget {
   final String? title;
   final List<Widget> children;
@@ -173,9 +175,9 @@ class SingleSection extends StatelessWidget {
   }
 }
 
-// Class for default AppBar
-// Use mostly in setting.dart and SettingDirectory
-// Will make the AppBar transparent and text white
+/// Class for default AppBar
+/// Use mostly in setting.dart and SettingDirectory
+/// Will make the AppBar transparent and text white
 class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
 
@@ -197,11 +199,11 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-// Will export whatever list to the app's data file as txt format
-// Future function use await
-// Require String
-// exportTextToFile(dataToExport)
-// The function return [bool, String]
+/// Will export whatever list to the app's data file as txt format
+/// Future function use await
+/// Require String
+/// exportTextToFile(dataToExport)
+/// The function return [bool, String]
 Future<List> exportTextToFile(String textToExport) async {
   final result = await FilePicker.platform.pickFiles(
     dialogTitle: 'exported_text.txt',
@@ -226,17 +228,17 @@ Future<List> exportTextToFile(String textToExport) async {
   }
 }
 
-// Will export whatever list to the app's data file as csv format
-// Future function use await
-// The list must be list within list i.e.
-//dataToExport = [
-//                ['Name', 's', 'City'],
-//                ['John', 30, 'New York'],
-//                ['Alice', 25, 'Los Angeles'],
-//                ['Bob', 35, 'Chicago'],
-//               ];
-// exportDataToCsv(dataToExport)
-// The function return [bool, String]
+/// Will export whatever list to the app's data file as csv format
+/// Future function use await
+/// The list must be list within list i.e.
+///dataToExport = [
+///                ['Name', 's', 'City'],
+///                ['John', 30, 'New York'],
+///                ['Alice', 25, 'Los Angeles'],
+///                ['Bob', 35, 'Chicago'],
+///               ];
+/// exportDataToCsv(dataToExport)
+/// The function return [bool, String]
 Future<List> exportDataToCsv(List<List<dynamic>> data) async {
   final csv = const ListToCsvConverter().convert(data);
 
@@ -274,10 +276,10 @@ void showFloatingSnackBar(
   );
 }
 
-// Function to generate question
-// GenQuestion('Question', ['Choice 1', 'Choice 2', 'Choice 3']);
-// Required QuestionWidget to work
-// See carbon_emission_survey1 for reference.
+/// Function to generate question
+/// GenQuestion('Question', ['Choice 1', 'Choice 2', 'Choice 3']);
+/// Required QuestionWidget to work
+/// See carbon_emission_survey1 for reference.
 class GenQuestion {
   final String text;
   final List<String> options;

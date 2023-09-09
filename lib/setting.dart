@@ -1,3 +1,6 @@
+/// A setting page.
+/// In this page, you will be able to change various stuff about the app
+
 import 'package:flutter/material.dart';
 import 'SettingDirectory/export_page.dart';
 import 'SettingDirectory/location_page.dart';

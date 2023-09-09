@@ -1,3 +1,6 @@
+/// Fist ever survey page
+/// You will be able answer some survey questions here
+
 import 'package:flutter/material.dart';
 import '../Data/airvibe_methods.dart';
 

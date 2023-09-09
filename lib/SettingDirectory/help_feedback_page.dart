@@ -1,9 +1,14 @@
+/// Help and feedback setting page.
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Data/airvibe_methods.dart';
 
 class HelpAndFeedbackPage extends StatelessWidget {
   const HelpAndFeedbackPage({super.key});
+
+  /// This function will redirect user to the selected website.
+  /// Use with onTap().
   _launchURLout(String aLink) async {
     Uri uri = Uri.parse(aLink);
     if (await canLaunchUrl(uri)) {

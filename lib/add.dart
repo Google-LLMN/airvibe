@@ -1,5 +1,5 @@
-// For the add page. When you clicked the big plus green button
-// TODO: Finish add page
+/// For the add page. When you pressed the big plus green button.
+/// In this page you will be able to do surveys. Fun.
 
 import 'package:flutter/material.dart';
 import 'Data/airvibe_methods.dart';
