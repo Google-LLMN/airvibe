@@ -16,16 +16,6 @@ class AQIRipper extends StatefulWidget {
 }
 
 class AQIWidgetState extends State<AQIRipper> {
-  // A SnackBar to use with _refreshDataWithDebounce()
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
 
   // A waiting timer between each click of the reload button
   bool isButtonDisabled = false;
@@ -35,7 +25,7 @@ class AQIWidgetState extends State<AQIRipper> {
         isButtonDisabled = true;
       });
 
-      _showSnackBar("Please wait...");
+      showFloatingSnackBar(context, "Please wait...",4);
       _refreshData();
 
       // Time delay between the reloading
@@ -56,7 +46,6 @@ class AQIWidgetState extends State<AQIRipper> {
       _message = 'Loading..';
       _weatherScale = 'Loading..';
     });
-
 
     await fetchData(
       'http://www.bom.gov.au/vic/forecasts/melbourne.shtml',
@@ -112,7 +101,6 @@ class AQIWidgetState extends State<AQIRipper> {
   // This function check the aqi scale and find out that you should go outside or not
   // Required string number and it changes the _message variable.
   Future<void> textFeedback(int aqiNumber) async {
-
     if (mounted) {
       try {
         if (aqiNumber < 45) {
@@ -288,7 +276,7 @@ class _PM25ScaleBarState extends State<_PM25ScaleBar> {
           width: 300,
           child: Align(
             alignment: Alignment.centerRight,
-            child: Text(widget.percentage > 100 ? 'Too High' : 'Acceptable',
+            child: Text(widget.percentage > 100 ? 'Too High' : '',
                 style: const TextStyle(color: Colors.white)),
           ),
         )
@@ -297,116 +285,18 @@ class _PM25ScaleBarState extends State<_PM25ScaleBar> {
   }
 }
 
-class AQIForeCast extends StatefulWidget {
-  const AQIForeCast({super.key});
-
-  @override
-  State<AQIForeCast> createState() => _AQIForeCastState();
-}
-
-class _AQIForeCastState extends State<AQIForeCast>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  final _selectedColor = const Color.fromARGB(255, 15, 27, 48);
-  final _tabs = [
-    const Tab(
-      icon: Icon(Icons.keyboard_double_arrow_left),
-    ),
-    const Tab(
-      icon: Icon(Icons.keyboard_arrow_left),
-    ),
-    const Tab(
-      icon: Icon(Icons.circle),
-    ),
-    const Tab(
-      icon: Icon(Icons.keyboard_arrow_right),
-    ),
-    const Tab(
-      icon: Icon(Icons.keyboard_double_arrow_right),
-    ),
-  ];
-
-  @override
-  void initState() {
-    _tabController =
-        TabController(length: _tabs.length, vsync: this, initialIndex: 2);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 32, 56, 100),
-      body: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: _selectedColor),
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white24,
-              tabs: _tabs,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20.0), // Adjust the radius
-              ),
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  TwoDaysAgoScreen(),
-                  YesterdayScreen(),
-                  TodayScreen(),
-                  TomorrowScreen(),
-                  NextTwoDaysScreen(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class AQIReportScreen extends StatefulWidget {
-  final String title;
-  final String urlSegment;
-  final int rowTable;
-
-  const AQIReportScreen({
-    Key? key,
-    required this.title,
-    required this.urlSegment,
-    required this.rowTable,
-  }) : super(key: key);
+  const AQIReportScreen({super.key});
 
   @override
-  State<AQIReportScreen> createState() => _AQIReportScreenState();
+  State<AQIReportScreen> createState() => AQIReportScreenState();
 }
 
-class _AQIReportScreenState extends State<AQIReportScreen> {
+class AQIReportScreenState extends State<AQIReportScreen> {
+  String _aqiTomorrow = '...';
+
   Future<void> _refreshData() async {
-    setState(() {
-      _aqi = '...';
-    });
+    // ignore: unused_local_variable
     String? auTown = await SavedLocation.getSelectedUrban();
     String? auState = await SavedLocation.getSelectedAUState();
     if (auState != null) {
@@ -429,89 +319,89 @@ class _AQIReportScreenState extends State<AQIReportScreen> {
     await fetchDataFromTable(
       'https://www.iqair.com/australia/$auState/$auTown',
       '.aqi-forecast__weekly-forecast-table',
-      widget.rowTable,
+      '.status-text b',
+      5,
       (newValue) {
         setState(() {
-          _aqi = newValue;
+          _aqiTomorrow = newValue;
         });
       },
     );
   }
 
-  String _aqi = '...';
+  Widget twoTextsColumn(String labelText, String valueText) {
+    return Container(
+      width:160,
+      padding: const EdgeInsets.all(25),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.black12,
+      ),
+      child: Column(
+        children: [
+          Text(
+            labelText,
+            style: const TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          Text(
+            valueText,
+            style: const TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    _refreshData();
+    if (_aqiTomorrow == '...') {
+      _refreshData();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // This set everything in TomorrowScreen, YesterdayScreen, TwoDaysAgoScreen,
+    // and NextTwoDaysScreen.
     return Container(
       width: double.infinity,
-      height: 150,
-      color: const Color.fromARGB(255, 58, 101, 183),
+      height: 450,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 50,),
+              twoTextsColumn('Average', _aqiTomorrow),
+              const SizedBox(height: 10,),
+              twoTextsColumn('Survey', '1') // TODO: Finish this <<
+            ],
+          ),
+          const SizedBox(width: 10,),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 50,),
+              twoTextsColumn('Point', '0'), // TODO: Finish this <<
+              const SizedBox(height: 10,),
+              twoTextsColumn('Finished', '0') // TODO: Finish this <<
+            ],
+          )
+        ],
+      ),
     );
   }
-}
-
-class TodayScreen extends StatefulWidget {
-  const TodayScreen({super.key});
-
-  @override
-  State<TodayScreen> createState() => _TodayScreenState();
-}
-
-class _TodayScreenState extends State<TodayScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: const Color.fromARGB(255, 58, 101, 183)),
-      width: double.infinity,
-      height: 150,
-
-    );
-  }
-}
-
-
-class TomorrowScreen extends AQIReportScreen {
-  const TomorrowScreen({super.key})
-      : super(
-          title: 'Tomorrow',
-          urlSegment: 'australia',
-          rowTable: 5,
-        );
-}
-
-class YesterdayScreen extends AQIReportScreen {
-  const YesterdayScreen({super.key})
-      : super(
-          title: 'Yesterday',
-          urlSegment: 'australia',
-          rowTable: 3,
-        );
-}
-
-class TwoDaysAgoScreen extends AQIReportScreen {
-  const TwoDaysAgoScreen({super.key})
-      : super(
-          title: 'Two Days Ago',
-          urlSegment: 'australia',
-          rowTable: 2,
-        );
-}
-
-class NextTwoDaysScreen extends AQIReportScreen {
-  const NextTwoDaysScreen({super.key})
-      : super(
-          title: 'Next Two Days',
-          urlSegment: 'australia',
-          rowTable: 6,
-        );
 }
 
 class HomeScreen extends StatelessWidget {
@@ -559,8 +449,8 @@ class HomeScreen extends StatelessWidget {
                 ),
                 SizedBox(
                   width: 330,
-                  height: 150,
-                  child: AQIForeCast(),
+                  height: 450, // Set the size of the box
+                  child: AQIReportScreen(),
                 )
               ],
             ),
